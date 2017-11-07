@@ -12,7 +12,7 @@ parameters = {"phage_off_diagonal": 0.05,
               "epi_inheritance" : [-2, -1, 1, 0.5, 0.25, 0.1, 0.01, 0], #-1 = genetic, -2 = random
               "phage_inactivation_time" : 3}
 
-batch_run = BatchRunner(PhageBacteriaRM, 
+batch_run = BatchRunner(BaseModel, 
                         parameters, 
                         iterations=1, 
                         max_steps=20,

@@ -50,7 +50,7 @@ def get_breed_filtered_count(breed_class, L):
     return wrapper
 
 
-class PhageBacteriaRM(Model):
+class BaseModel(Model):
     '''
     Phage-Bacteria with RM systems
     '''
@@ -72,9 +72,7 @@ class PhageBacteriaRM(Model):
                  encounter_width = 0.01,
                  verbose=False,
                  latency = 0.5,
-                 manipulator = None,
-                 epi_inheritance = 1,
-                 **kwargs):
+                 epi_inheritance = 1):
         '''
         Create a new Phage-Bacteria model with the given parameters.
 
@@ -98,7 +96,6 @@ class PhageBacteriaRM(Model):
                                           bacteria that can be encountered by the phage
         verbose (bool)                    print info about the simulation
         latency (float)             
-        manipulator (function)            function to be run at each step of the model with the model as the argument
         epi_inheritance (float or string) odds that the progeny gets the parent's methylation state. Otherwise gets None. If "genetic" then the phage inherits its parent's methylation state
         '''
         
@@ -120,7 +117,6 @@ class PhageBacteriaRM(Model):
         self.encounter_width = encounter_width
         self.agent_width = 0.0001
         self.latency = latency
-        self.manipulator = manipulator
         self.epi_inheritance = epi_inheritance
 
         if self.encounter_width > 1 or self.encounter_width < 0:
@@ -200,8 +196,6 @@ class PhageBacteriaRM(Model):
             self.schedule.add(bacteria)
             
     def step(self):
-        if self.manipulator:
-            self.manipulator(self)
         self.datacollector.collect(self)
         # Shuffle the location of agents each time
         self.tree = IntervalTree()
