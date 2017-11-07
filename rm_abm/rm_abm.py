@@ -55,7 +55,7 @@ class BaseModel(Model):
 
     def __init__(self,
                  initial_phage = 10,
-                 initial_fraction_p_rm1 = 1,
+                 initial_fraction_p_m1 = 1,
                  initial_fraction_p_g1 =1,
                  initial_bacteria=100,
                  fraction_b_m1=0.5,                 
@@ -100,7 +100,7 @@ class BaseModel(Model):
         # set parameters
         self.initial_phage = initial_phage
         self.initial_bacteria = initial_bacteria
-        self.initial_fraction_p_rm1 = initial_fraction_p_rm1
+        self.initial_fraction_p_m1 = initial_fraction_p_m1
         self.initial_fraction_p_g1 = initial_fraction_p_g1
         self.fraction_b_m1 = fraction_b_m1
         self.verbose = verbose
@@ -158,8 +158,8 @@ class BaseModel(Model):
         
         for i in range(self.initial_phage):
             # sample methylation
-            rm_probs = [1-self.initial_fraction_p_rm1,
-                        self.initial_fraction_p_rm1]
+            rm_probs = [1-self.initial_fraction_p_m1,
+                        self.initial_fraction_p_m1]
             rm = np.random.choice([0,1],p=rm_probs)
             # sample genotypes
             g_probs = [1-self.initial_fraction_p_g1,
@@ -228,7 +228,7 @@ class BaseModel(Model):
 class SpikeIn(BaseModel):
 
     def __init__(self,
-                 spike_in_affinity_0 = 0
+                 spike_in_affinity_0 = 0,
                  spike_in_methylation = 0,
                  **kwargs):
 
@@ -237,13 +237,13 @@ class SpikeIn(BaseModel):
         self.spike_in_affinity_0 = spike_in_affinity_0
         self.spike_in_methylation = 0
 
-        p_affinity = evolvable.EvolvableVector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]),
-                                               self.phage_mutation_step,
-                                               self.phage_mutation_freq)
+        p_affinity = EvolvableVector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]),
+                                     self.phage_mutation_step,
+                                     self.phage_mutation_freq)
 
         for i in range(1,self.phage_burst_size,1):
             phage = Phage(
-                model,
+                self,
                 i*-10, 
                 0, #genotype 0
                 self.spike_in_methylation, #methylation 0
@@ -251,7 +251,7 @@ class SpikeIn(BaseModel):
                 p_affinity,
                 -1) #all have parent -1
         
-        model.schedule.add(phage)
+        self.schedule.add(phage)
         
         
 

@@ -2,7 +2,6 @@ from rm_abm.rm_abm import *
 from rm_abm import evolvable, helper_functions, timeseries_runner
 from rm_abm import hdf_functions
 from mesa.batchrunner import BatchRunner
-from pandas import HDFStore, DataFrame
 
 parameters = {"phage_off_diagonal": 0.05,
               "phage_mutation_step" : 0.1,

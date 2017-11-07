@@ -1,5 +1,6 @@
 from mesa.datacollection import DataCollector
 import pandas as pd
+from .log_progress import log_progress
 from .helper_functions import make_list_float, make_iterable, unpack_params
 
 
@@ -80,9 +81,11 @@ class TimeseriesRunner():
         Aggregated variables will always contain the model's
         parameters.
 
+        
+
         '''
         n_cycles = len(self.parameters) * self.iterations
-        for model_key, model in self.models:
+        for model_key, model in log_progress(self.models, size=n_cycles, every=1):
             model.run_model(self.max_steps)
             agent_vars = model.datacollector.agent_vars
             model_vars = model.datacollector.model_vars
