@@ -9,8 +9,6 @@ import numpy as np
 import pandas as pd
 import random
 
-
-
 def by_genotype(g):
     '''Return a lambda to filter by genotype'''
     def wrapper(a):
@@ -225,6 +223,38 @@ class BaseModel(Model):
                 self.schedule.get_breed_count(Phage))
             print('Final number bacteria: ',
                 self.schedule.get_breed_count(Bacteria))
+
+
+class SpikeIn(BaseModel):
+
+    def __init__(self,
+                 spike_in_affinity_0 = 0
+                 spike_in_methylation = 0,
+                 **kwargs):
+
+        BaseModel.__init__(self, **kwargs)
+
+        self.spike_in_affinity_0 = spike_in_affinity_0
+        self.spike_in_methylation = 0
+
+        p_affinity = evolvable.EvolvableVector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]),
+                                               self.phage_mutation_step,
+                                               self.phage_mutation_freq)
+
+        for i in range(1,self.phage_burst_size,1):
+            phage = Phage(
+                model,
+                i*-10, 
+                0, #genotype 0
+                self.spike_in_methylation, #methylation 0
+                self.phage_inactivation_time,
+                p_affinity,
+                -1) #all have parent -1
+        
+        model.schedule.add(phage)
+        
+        
+
 
 class Phage(Agent):
     '''A phage that recognizes and infects bacteria'''
