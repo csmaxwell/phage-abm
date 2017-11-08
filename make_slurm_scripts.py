@@ -29,8 +29,8 @@ argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
 out_str = '''#!/bin/bash
 #SBATCH --job-name=maxwell_abm
 #SBATCH --ntasks=1
-#SBATCH --time=10:00
-#SBATCH --mem=1000
+#SBATCH --time=15:00
+#SBATCH --mem=1500
 #SBATCH --output "slurm-out/slurm-%s.out"
 
 module add anaconda/4.3.0
