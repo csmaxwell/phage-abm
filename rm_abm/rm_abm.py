@@ -251,7 +251,7 @@ class SpikeIn(BaseModel):
                 p_affinity,
                 -1) #all have parent -1
         
-        self.schedule.add(phage)
+            self.schedule.add(phage)
         
         
 
