@@ -11,7 +11,7 @@ params_to_scan = {'bacteria_per_step': 10,
           'initial_bacteria': 100,
           'initial_fraction_p_g1': 1,
           'initial_fraction_p_m1': 1,
-          'initial_phage': 10,
+          'initial_phage': [10,100,1000],
           'latency': 0.1,
           'phage_burst_size': 10,
           'phage_inactivation_time': 3,
@@ -21,7 +21,7 @@ params_to_scan = {'bacteria_per_step': 10,
           're_degrade_foreign_0':  [0.999, 0.99, 0],
           're_degrade_foreign_1':  [0.999, 0.99, 0],
           'epi_inheritance' : [-2,-1,0.1,0.5,1],
-          'spike_in_affinity_0' : [0, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.5, 0.6, 0.95],
+          'spike_in_affinity_0' : [0, 0.05,, 0.1, 0.2, 0.3, 0.5, 0.75, 0.95],
           'spike_in_methylation' : [0,1]}
 
 argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
@@ -30,8 +30,8 @@ argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
 out_str = '''#!/bin/bash
 #SBATCH --job-name=maxwell_abm
 #SBATCH --ntasks=1
-#SBATCH --time=15:00
-#SBATCH --mem=1500
+#SBATCH --time=20:00
+#SBATCH --mem=2000
 #SBATCH --output "slurm-out/slurm-%s.out"
 
 module add anaconda/4.3.0
