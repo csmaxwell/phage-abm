@@ -13,7 +13,7 @@ parameters = {"phage_off_diagonal": 0.05,
 
 batch_run = BatchRunner(BaseModel, 
                         parameters, 
-                        iterations=1, 
+                        iterations=10, 
                         max_steps=20,
                         agent_reporters = {
                                 "breed" : lambda a : a.breed,
@@ -31,4 +31,4 @@ batch_run = BatchRunner(BaseModel,
 
 batch_run.run_all()
 run_data_agents = batch_run.get_agent_vars_dataframe()
-run_data_agents.to_csv("foo.csv")
+run_data_agents.to_csv("evolvable-phage-endpoint.csv")
