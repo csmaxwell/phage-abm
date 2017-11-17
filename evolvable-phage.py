@@ -11,7 +11,7 @@ parameters = {"phage_off_diagonal": [0.05, 0.5],
               "epi_inheritance" : [-2, -1, 1, 0.5, 0.1], #-1 = genetic, -2 = random
               "phage_inactivation_time" : 3}
 
-BaseModel(
+
 
 batch_run = BatchRunner(BaseModel, 
                         parameters, 
