@@ -16,7 +16,7 @@ parameters = {"phage_off_diagonal": [0.05, 0.5],
 batch_run = BatchRunner(BaseModel, 
                         parameters, 
                         iterations=10, 
-                        max_steps=20,
+                        max_steps=200,
                         agent_reporters = {
                                 "breed" : lambda a : a.breed,
                                 "methylation" : lambda a: a.methylation,
