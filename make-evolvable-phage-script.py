@@ -40,7 +40,7 @@ import pandas as pd
 
 batch_run = BatchRunner(BaseModel, 
                         parameters, 
-                        iterations=10, 
+                        iterations=1, 
                         max_steps=200,
                         agent_reporters = {
                                 "breed" : lambda a : a.breed,
@@ -66,8 +66,6 @@ echo success
 
 # str ID
 # str Arg string
-# int steps
-# int reps
 # str ID
 
 for arg_str in argument_strings:
