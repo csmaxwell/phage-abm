@@ -5,17 +5,24 @@ from uuid import uuid4
 def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
 
+params_to_scan = {'bacteria_per_step': 10,
+          'encounter_width': 0.1,
+          'fraction_b_m1': [0.1, 0.5, 0.9],
+          'initial_bacteria': 100,
+          'initial_fraction_p_g1': 1,
+          'initial_fraction_p_m1': 1,
+          'initial_phage': 1000,
+          'latency': 0.1,
+          'phage_burst_size': 10,
+          'phage_inactivation_time': 3,
+          'phage_mutation_freq': [0.01, 0.1],
+          'phage_mutation_step': 0.05,
+          'phage_off_diagonal':  [0.05, 0.5, 0.95],
+          're_degrade_foreign_0':  [0.999, 0.99, 0],
+          're_degrade_foreign_1':  [0.999, 0.99, 0],
+          'epi_inheritance' : [-2,-1,1,0.5,0.1]}
 
-params_to_scan = {"phage_off_diagonal": [0.05, 0.5],
-              "fraction_b_m1" : [0.1,0.5,0.9],
-              "phage_mutation_step" : 0.1,
-              "phage_mutation_freq" : [0.1, 1],
-              "re_degrade_foreign_0": [0, 0.99, 0.999],
-              "re_degrade_foreign_1": [0, 0.99, 0.999],
-              "epi_inheritance" : [-2, -1, 1, 0.5, 0.1], #-1 = genetic, -2 = random
-              "phage_inactivation_time" : 3}
-
-replicates = 1
+replicates = 3
 
 argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
 
