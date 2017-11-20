@@ -5,24 +5,30 @@ from uuid import uuid4
 def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
 
+#18388bb initial phage = 10
+#18388bb encounter width = 0.01
+#18388bb phage burst size = 3
+#18388bb phage mutation step = 0.1
+#18388bb latency = 0.5
+
 params_to_scan = {'bacteria_per_step': 10,
-          'encounter_width': 0.1,
+          'encounter_width': [0.01,0.1],
           'fraction_b_m1': [0.1, 0.5, 0.9],
           'initial_bacteria': 100,
           'initial_fraction_p_g1': 1,
           'initial_fraction_p_m1': 1,
-          'initial_phage': 100,
-          'latency': 0.1,
-          'phage_burst_size': 10,
+          'initial_phage': [10,100],
+          'latency': [0.1,0.5],
+          'phage_burst_size': [3,10],
           'phage_inactivation_time': 3,
-          'phage_mutation_freq': [0.01, 0.1],
-          'phage_mutation_step': 0.05,
+          'phage_mutation_freq': [0.01, 0.1, 1],
+          'phage_mutation_step': [0.05, 0.1],
           'phage_off_diagonal':  [0.05, 0.5, 0.95],
           're_degrade_foreign_0':  [0.999, 0.99, 0],
           're_degrade_foreign_1':  [0.999, 0.99, 0],
           'epi_inheritance' : [-2,-1,1,0.5,0.1]}
 
-replicates = 3
+replicates = 1
 
 argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
 
