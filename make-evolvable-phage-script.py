@@ -6,7 +6,7 @@ def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
 
 
-parameters = {"phage_off_diagonal": [0.05, 0.5],
+params_to_scan = {"phage_off_diagonal": [0.05, 0.5],
               "fraction_b_m1" : [0.1,0.5,0.9],
               "phage_mutation_step" : 0.1,
               "phage_mutation_freq" : [0.1, 1],
