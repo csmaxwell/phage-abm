@@ -15,7 +15,7 @@ params_to_scan = {"phage_off_diagonal": [0.05, 0.5],
               "epi_inheritance" : [-2, -1, 1, 0.5, 0.1], #-1 = genetic, -2 = random
               "phage_inactivation_time" : 3}
 
-replicates = 10
+replicates = 1
 
 argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
 
@@ -39,9 +39,9 @@ from rm_abm import parameters
 import pandas as pd
 
 batch_run = BatchRunner(BaseModel, 
-                        parameters, 
-                        iterations=1, 
-                        max_steps=200,
+                        %s, 
+                        iterations=%i, 
+                        max_steps=%i,
                         agent_reporters = {
                                 "breed" : lambda a : a.breed,
                                 "methylation" : lambda a: a.methylation,
@@ -72,4 +72,4 @@ for arg_str in argument_strings:
     for i in range(replicates):
         unique_id = uuid4().hex
         with open("scripts/%s.sh" % unique_id, "w") as f:
-            f.write(out_str % (unique_id, arg_str, 200, 10, unique_id))
+            f.write(out_str % (unique_id, arg_str, 10, 200, unique_id))
