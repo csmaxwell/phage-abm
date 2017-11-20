@@ -36,6 +36,7 @@ from rm_abm.rm_abm import *
 from rm_abm import timeseries_aggregator
 from rm_abm import helper_functions
 from rm_abm import parameters
+from mesa.batchrunner import BatchRunner
 import pandas as pd
 
 batch_run = BatchRunner(BaseModel, 
