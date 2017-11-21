@@ -13,11 +13,11 @@ def dict_to_args(x):
 
 params_to_scan = {'bacteria_per_step': 10,
           'encounter_width': 0.1,
-          'fraction_b_m1': 0.5,
+          'fraction_b_m1': [0.1, 0.5, 0.9],
           'initial_bacteria': 100,
           'initial_fraction_p_g1': 1,
           'initial_fraction_p_m1': 1,
-          'initial_phage': 100,
+          'initial_phage': [100,1000],
           'latency': 0.1,
           'phage_burst_size': 10,
           'phage_inactivation_time': 3,
@@ -26,7 +26,7 @@ params_to_scan = {'bacteria_per_step': 10,
           'phage_off_diagonal':  0.5,
           're_degrade_foreign_0':  [0.999, 0.99, 0],
           're_degrade_foreign_1':  [0.999, 0.99, 0],
-          'epi_inheritance' : 1}
+          'epi_inheritance' : [-2,-1,1,0.5]}
 
 replicates = 1
 
