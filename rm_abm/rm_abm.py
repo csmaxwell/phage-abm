@@ -377,11 +377,18 @@ class Bacteria(Agent):
                         self.model.schedule.add(phage)
                 elif self.model.epi_inheritance == -1: # This is genetic inheritance
                     for i in range(self.model.phage_burst_size):
+                        if bernoulli(self.model.re_degrade_foreign):
+                            methylation = self.phage.methylation #inherits parent's methylation,
+                        else: # methylation mutation
+                            if self.phage.methylation == 0:
+                                methylation = 1 
+                            else:
+                                methylation = 0
                         phage = Phage(
                             self.model,
                             self.model.get_next_ID(),
                             self.phage.genotype,
-                            self.phage.methylation, #inherits parent's methylation,
+                            methylation, 
                             self.model.phage_inactivation_time,
                             self.phage.affinity.copy(), ## mutations possible here
                             self.phage.unique_id,
