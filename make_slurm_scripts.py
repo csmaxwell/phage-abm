@@ -21,7 +21,7 @@ params_to_scan = {'bacteria_per_step': 10,
           're_degrade_foreign_0':  [0.999, 0.99, 0],
           're_degrade_foreign_1':  [0.999, 0.99, 0],
           'epi_inheritance' : [-2,-1,1,0.5],
-          'spike_in_affinity_0' : [0.01,0.1,0.4,0.5,0.6,0.9],
+          'spike_in_affinity_0' : [0.01,0.05,0.1,0.4,0.5,0.6,0.9],
           'spike_in_methylation' : [0,1]}
 
 argument_strings = [i.__str__() for i in unpack_params(params_to_scan)]
