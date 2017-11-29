@@ -284,9 +284,10 @@ class TradeOffSpikeIn(TradeOff,SpikeIn):
 
     def __init__(self, shape=2, spike_in_affinity_0 = 0,
                  spike_in_methylation = 0, **kwargs):
-
-        SpikeIn.__init__(spike_in_affinity, spike_in_methylation)
-        TradeOff.__init__(shape, **kwargs)
+        
+        TradeOff.__init__(self, shape = shape, **kwargs)
+        SpikeIn.__init__(self, spike_in_affinity_0=spike_in_affinity_0,
+                         spike_in_methylation = spike_in_methylation)
 
         
 
