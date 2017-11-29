@@ -81,7 +81,7 @@ class EvolvableVectorConstrained(EvolvableVector):
             # Calculate distance to point
             to_line = ((on_line - the_point)**2).sum(axis=1)
             closest_on_line = on_line[to_line.argmin(),:]
-            diff = closest_on_line - pt
+            diff = closest_on_line - the_point
             if (diff > 0).all(): # falls above line
                 return the_point
             else:
