@@ -89,4 +89,15 @@ class EvolvableVectorConstrained(EvolvableVector):
         
         vector = np.array( list( map(constrainer, vector)))
         return bound_to_set(self.bounding_line, vector)
+
+    def copy(self):
+        '''
+        Return a new EvolvableVector with mutated parameters.
+        '''
+        new_vector = self.mutate(self.vector.copy())
+        new_vector = self.constrain(new_vector)
+        return EvolvableVectorConstrained(new_vector,
+                                          self.mutation_size,
+                                          self.mutation_frequency,
+                                          self.bounding_line)
         
