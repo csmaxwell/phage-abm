@@ -21,7 +21,7 @@ params_to_scan = {'bacteria_per_step': 10,
                   're_degrade_foreign_0':  [0.999, 0.99, 0],
                   're_degrade_foreign_1':  [0.999, 0.99, 0],
                   'epi_inheritance' : [-2,-1,1,0.5],
-                  'shape' : [1,2]}
+                  'shape' : [0,1,2]}
 
 replicates = 1
 

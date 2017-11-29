@@ -264,12 +264,18 @@ class TradeOff(BaseModel):
         max_y = np.array(list(map(lambda s: (s)**shape, vec)))
         bounding_line = np.array([max_x,max_y])
         self.bounding_line = bounding_line.transpose()
-
+        self.shape = shape
+        
         BaseModel.__init__(self, **kwargs)
 
 
     def get_evolvable_vector(self, probs):
-        return EvolvableVectorConstrained(probs,
+        if self.shape == 0:
+            return EvolvableVector(probs,
+                                   self.phage_mutation_step,
+                                   self.phage_mutation_freq)
+        else:
+            return EvolvableVectorConstrained(probs,
                                           self.phage_mutation_step,
                                           self.phage_mutation_freq,
                                           self.bounding_line)        
