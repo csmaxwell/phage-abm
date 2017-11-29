@@ -54,3 +54,39 @@ class EvolvableVector(object):
                                self.mutation_size,
                                self.mutation_frequency)
     
+
+
+
+class EvolvableVectorConstrained(EvolvableVector):
+    """bounding_line is an array of shape (2,X)
+    """
+    def __init__(self,
+                 vector,
+                 mutation_size,
+                 mutation_frequency,
+                 bounding_line):
+
+        EvolvableVector.__init__(self, vector,  mutation_size, mutation_frequency)
+        self.bounding_line = bounding_line
+
+    def constrain(self, vector):
+        def constrainer(x):
+            if x < 0:
+                return 0
+            if x > 1:
+                return 1
+            return x
+
+        def bound_to_set(on_line, the_point):
+            # Calculate distance to point
+            to_line = ((on_line - the_point)**2).sum(axis=1)
+            closest_on_line = on_line[to_line.argmin(),:]
+            diff = closest_on_line - pt
+            if (diff > 0).all(): # falls above line
+                return the_point
+            else:
+                return closest_on_line
+        
+        vector = np.array( list( map(constrainer, vector)))
+        return bound_to_set(self.bounding_line, vector)
+        

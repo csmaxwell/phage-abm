@@ -150,6 +150,11 @@ class BaseModel(Model):
         self.current_ID += 1
         return self.current_ID
 
+    def get_evolvable_vector(self, probs):
+        return EvolvableVector(probs,
+                               self.phage_mutation_step,
+                               self.phage_mutation_freq)
+    
     def add_phage(self):
         #Create phage
         #phage start with affinity according to a symmetric matrix
@@ -166,10 +171,8 @@ class BaseModel(Model):
                        self.initial_fraction_p_g1]
             g = np.random.choice([0,1], p=g_probs)
             # assign affinity based on genotype
-            p_affinity = EvolvableVector(
-                affinity[g,:].copy(),
-                self.phage_mutation_step,
-                self.phage_mutation_freq)
+            p_affinity = self.get_evolvable_vector(
+                affinity[g,:].copy())
             phage = Phage(
                 self,
                 self.get_next_ID(),
@@ -237,9 +240,7 @@ class SpikeIn(BaseModel):
         self.spike_in_affinity_0 = spike_in_affinity_0
         self.spike_in_methylation = spike_in_methylation
 
-        p_affinity = EvolvableVector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]),
-                                     self.phage_mutation_step,
-                                     self.phage_mutation_freq)
+        p_affinity = self.get_evolvable_vector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]))
 
         for i in range(1,self.phage_burst_size,1):
             phage = Phage(
@@ -252,8 +253,26 @@ class SpikeIn(BaseModel):
                 -1) #all have parent -1
         
             self.schedule.add(phage)
+
+
+class TradeOff(BaseModel):
+
+    def __init__(self, shape = 2, **kwargs):
         
-        
+        vec = np.array(np.arange(0.0,1.1,0.01))
+        max_x = np.array(list(map(lambda s: (1-s)**shape, vec)))
+        max_y = np.array(list(map(lambda s: (s)**shape, vec)))
+        bounding_line = np.array([max_x,max_y])
+        self.bounding_line = bounding_line.transpose()
+
+        BaseModel.__init__(self, **kwargs)
+
+
+    def get_evolvable_vector(self, probs):
+        return EvolvableVectorConstrained(probs,
+                                          self.phage_mutation_step,
+                                          self.phage_mutation_freq,
+                                          self.bounding_line)        
 
 
 class Phage(Agent):
