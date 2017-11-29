@@ -278,7 +278,17 @@ class TradeOff(BaseModel):
             return EvolvableVectorConstrained(probs,
                                           self.phage_mutation_step,
                                           self.phage_mutation_freq,
-                                          self.bounding_line)        
+                                          self.bounding_line)
+
+class TradeOffSpikeIn(TradeOff,SpikeIn):
+
+    def __init__(self, shape=2, spike_in_affinity_0 = 0,
+                 spike_in_methylation = 0, **kwargs):
+
+        SpikeIn.__init__(spike_in_affinity, spike_in_methylation)
+        TradeOff.__init__(shape, **kwargs)
+
+        
 
 
 class Phage(Agent):
