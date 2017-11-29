@@ -1,7 +1,7 @@
 from mesa import Model, Agent
 from mesa.datacollection import DataCollector
 from .wolfsheep_schedule import RandomActivationByBreed # from WolfSheep
-from .evolvable import EvolvableVector
+from .evolvable import EvolvableVector, EvolvableVectorConstrained
 from matplotlib import pyplot as plt
 from collections import defaultdict
 from intervaltree import Interval, IntervalTree
