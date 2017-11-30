@@ -1,6 +1,11 @@
 from rm_abm.helper_functions import unpack_params
 from uuid import uuid4
+import argparse
 
+parser = argparse.ArgumentParser(description="""""")
+parser.add_argument("outname", type=str, help="")
+parser.add_argument("repo", type=str, help="")
+args = parser.parse_args()
 
 def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
@@ -46,52 +51,16 @@ from rm_abm import helper_functions
 from rm_abm import parameters
 import pandas as pd
 
-def get_descendents(data, ID):
-    if type(ID) is int:
-        lineage_IDs = [ID]
-    if type(ID) is set:
-        lineage_IDs = list(ID)
-    descendents = data[data.parent.isin(lineage_IDs)]
-    while descendents.shape[0] > 0:
-        child_IDs = list(descendents.AgentID)
-        lineage_IDs = lineage_IDs + child_IDs
-        descendents = data[data.parent.isin(child_IDs)]
-    return set(lineage_IDs)
-
-
-def get_manipulated_descendents(agent_dataframe):
-    lineage = get_descendents(agent_dataframe, -1)
-    last_step = agent_dataframe.Step.max()
-    descendents_data = agent_dataframe[np.logical_and(agent_dataframe.breed == "Phage",
-                                                      agent_dataframe.AgentID.isin(lineage))]
-    infecting_0 = descendents_data[descendents_data.last_infected == 0]
-    infecting_1 = descendents_data[descendents_data.last_infected == 1]
-    return pd.DataFrame(
-        {"descendents" : [np.sum(descendents_data.Step == last_step)],
-         "descendents_in_0" : [np.sum(infecting_0.Step == last_step)],
-         "n_phage" : [np.sum(agent_dataframe.Step == last_step)],
-         "n_phage_in_0" : [np.sum(np.logical_and(agent_dataframe.Step == last_step,
-                                                 agent_dataframe.last_infected == 0))],
-         "affinity_in_0_for_0" : [np.mean(infecting_0.affinity_0)],
-         "affinity_in_0_for_1" : [np.mean(infecting_0.affinity_1)],
-         "affinity_in_1_for_0" : [np.mean(infecting_1.affinity_0)],
-         "affinity_in_1_for_1" : [np.mean(infecting_1.affinity_1)],
-         "population_affinity_0" : [np.mean(agent_dataframe[agent_dataframe.Step == last_step].affinity_0)],
-         "population_affinity_1" : [np.mean(agent_dataframe[agent_dataframe.Step == last_step].affinity_1)],
-         "population_affinity_0_std" : [np.std(agent_dataframe[agent_dataframe.Step == last_step].affinity_0)],
-         "population_affinity_1_std" : [np.std(agent_dataframe[agent_dataframe.Step == last_step].affinity_1)]})
-
-
-runner = timeseries_aggregator.TimeseriesRunner(SpikeIn, 
+runner = timeseries_aggregator.TimeseriesRunner(TradeOffSpikeIn, 
                           %s,
                           %i, %i, 
                           agent_reporters=parameters.agent_reporters,
-                          agent_aggregator=get_manipulated_descendents,
+                          agent_aggregator=helper_functions.get_manipulated_descendents,
                           model_reporters=parameters.model_reporters,
                           model_aggregator=None)
 
 out = pd.concat([agg_agent for param_dict, agent_data, model_data, agg_agent, agg_model in runner.dataframes()])
-out.to_csv("output/%s.csv")
+out.to_csv("output/output-%s-%s/%s.csv")
 EOF
 echo success
 '''
@@ -100,11 +69,13 @@ echo success
 # str Arg string
 # int steps
 # int reps
+# str args.outname
+# str args.repo
 # str ID
 
 for arg_str in argument_strings:
     for i in range(replicates):
         unique_id = uuid4().hex
-        with open("scripts/%s.sh" % unique_id, "w") as f:
-            f.write(out_str % (unique_id, arg_str, 200, 10, unique_id))
+        with open("scripts/scripts-%s/%s.sh" % (args.outname,unique_id), "w") as f:
+            f.write(out_str % (unique_id, arg_str, 200, 10, args.outname, args.repo, unique_id))
     

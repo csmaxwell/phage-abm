@@ -52,8 +52,7 @@ echo success'''
 class SBatchRunner(SLURM):
     def __init__(self, steps, reps, model_class):
         
-        SLURM.__init__(self, hash_name, script_name,
-                       repo_name, steps, reps, model_class)
+        SLURM.__init__(self, steps, reps, model_class)
 
     def get_slurm_code(self, parameter_string):
         format_str = """
@@ -97,20 +96,20 @@ class Analysis():
     
     def __init__(self, name, slurm_class, parameters, addl_reps, commit):
         self.name = name
-        self.slurm_clss = slurm_class
+        self.slurm_class = slurm_class
         self.addl_reps = addl_reps
         self.commit = commit
-        self.replicates = replicates
+        self.addl_reps = addl_reps
         self.argument_strings = [i.__str__() for i in unpack_params(parameters)]
         self.scripts = []
 
     def write_scripts(self):
-        os.mkdir("output/output-%s-%s/" % (self.name, self.commit))
-        os.mkdir("scripts/scripts-%s-%s/" %  (self.name, self.commit)) 
+        os.makedirs("output/output-%s-%s/" % (self.name, self.commit))
+        os.makedirs("scripts/scripts-%s-%s/" %  (self.name, self.commit)) 
         for arg_str in self.argument_strings:
-            for i in range(replicates):
+            for i in range(self.addl_reps):
                 unique_id = uuid4().hex
-                out_script = self.slurm_class.get_slurm_script(arg_string, self.name, self.commit, unique_id)
+                out_script = self.slurm_class.get_slurm_script(arg_str, self.name, self.commit, unique_id)
                 script_name = "scripts/scripts-%s-%s/%s.sh" % (self.name, self.commit,unique_id)
                 with open(script_name, "w") as f:
                     f.write(out_script)

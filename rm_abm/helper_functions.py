@@ -1,6 +1,7 @@
 import functools
 from .rm_abm import Phage
 import numpy as np
+import pandas as pd
 import statsmodels
 import numbers
 from itertools import product

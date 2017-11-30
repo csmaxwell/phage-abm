@@ -1,15 +1,15 @@
 from rm_abm.helper_functions import unpack_params
 from uuid import uuid4
+import argparse
+
+parser = argparse.ArgumentParser(description="""""")
+parser.add_argument("outname", type=str, help="")
+parser.add_argument("repo", type=str, help="")
+args = parser.parse_args()
 
 
 def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
-
-#18388bb initial phage = 10
-#18388bb encounter width = 0.01
-#18388bb phage burst size = 3
-#18388bb phage mutation step = 0.1
-#18388bb latency = 0.5
 
 params_to_scan = {'bacteria_per_step': 10,
           'encounter_width': 0.01,
@@ -73,17 +73,22 @@ batch_run = BatchRunner(BaseModel,
 batch_run.run_all()
 out = batch_run.get_agent_vars_dataframe()
 
-out.to_csv("outputs/output-01/%s.csv")
+out.to_csv("output/output-%s-%s/%s.csv")
 EOF
 echo success
 '''
 
 # str ID
 # str Arg string
+# int steps
+# int reps
+# str args.outname
+# str args.repo
 # str ID
 
 for arg_str in argument_strings:
     for i in range(replicates):
         unique_id = uuid4().hex
-        with open("scripts/scripts-01/%s.sh" % unique_id, "w") as f:
-            f.write(out_str % (unique_id, arg_str, 10, 200, unique_id))
+        with open("scripts/scripts-%s/%s.sh" % (args.outname,unique_id), "w") as f:
+            f.write(out_str % (unique_id, arg_str, 200, 10, args.outname, args.repo, unique_id))
+    
