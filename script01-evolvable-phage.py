@@ -73,7 +73,7 @@ batch_run = BatchRunner(BaseModel,
 batch_run.run_all()
 out = batch_run.get_agent_vars_dataframe()
 
-out.to_csv("output/%s.csv")
+out.to_csv("outputs/output-01/%s.csv")
 EOF
 echo success
 '''
@@ -85,5 +85,5 @@ echo success
 for arg_str in argument_strings:
     for i in range(replicates):
         unique_id = uuid4().hex
-        with open("scripts/%s.sh" % unique_id, "w") as f:
+        with open("scripts/scripts-01/%s.sh" % unique_id, "w") as f:
             f.write(out_str % (unique_id, arg_str, 10, 200, unique_id))
