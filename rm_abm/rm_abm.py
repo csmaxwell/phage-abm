@@ -280,15 +280,30 @@ class TradeOff(BaseModel):
                                           self.phage_mutation_freq,
                                           self.bounding_line)
 
-class TradeOffSpikeIn(TradeOff,SpikeIn):
+class TradeOffSpikeIn(TradeOff):
 
     def __init__(self, shape=2, spike_in_affinity_0 = 0,
                  spike_in_methylation = 0, **kwargs):
         
         TradeOff.__init__(self, shape = shape, **kwargs)
-        SpikeIn.__init__(self, spike_in_affinity_0=spike_in_affinity_0,
-                         spike_in_methylation = spike_in_methylation)
 
+        self.spike_in_affinity_0 = spike_in_affinity_0
+        self.spike_in_methylation = spike_in_methylation
+
+        p_affinity = self.get_evolvable_vector(np.array([spike_in_affinity_0, 1-spike_in_affinity_0]))
+
+        for i in range(1,self.phage_burst_size,1):
+            phage = Phage(
+                self,
+                i*-10, 
+                0, #genotype 0
+                self.spike_in_methylation,
+                self.phage_inactivation_time,
+                p_affinity,
+                -1) #all have parent -1
+        
+            self.schedule.add(phage)
+        
         
 
 
