@@ -91,7 +91,8 @@ runner = timeseries_aggregator.TimeseriesRunner(%s,
 
 out = pd.concat([agg_agent for param_dict, agent_data, model_data, agg_agent, agg_model in runner.dataframes()])"""
         return format_str % (self.model_class, parameter_string, self.steps, self.reps)
-        
+
+    
 class Analysis():
     
     def __init__(self, name, slurm_class, parameters, addl_reps, commit):
