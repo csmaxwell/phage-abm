@@ -7,7 +7,6 @@ parser.add_argument("outname", type=str, help="")
 parser.add_argument("repo", type=str, help="")
 args = parser.parse_args()
 
-
 def dict_to_args(x):
     return ",".join(["%s = %s" % (i,j) for i,j in x.items()])
 
