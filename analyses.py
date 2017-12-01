@@ -60,9 +60,12 @@ if args.a2:
 
 ########## predictivity
 
-predict_params = evolve_params.copy()
+predict_params = short_tradeoff_params.copy()
+predict_params['re_degrade_foreign_0'] = [0.999, 0.99, 0]
+predict_params['re_degrade_foreign_1'] = [0.999, 0.99, 0]
 predict_params['phage_off_diagonal'] =  [0.05,0.5]
 predict_params['spike_in_affinity_0'] = [0.01,0.05,0.1,0.4,0.5,0.6,0.9]
+predict_params['epi_inheritance'] = [-2,-1,1,0.5]
 del predict_params['shape']
 
 a3 = Analysis("predictivity",
