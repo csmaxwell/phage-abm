@@ -6,9 +6,6 @@ import os
 
 class SLURM():
     def __init__(self, steps, reps, model_class):
-
-        self.steps = steps
-        self.reps = reps
         self.model_class = model_class
         pass
     
@@ -39,13 +36,13 @@ EOF
 echo success'''
         return format_str % (script_name, repo_name, hash_name)
 
-    def get_slurm_script(self, parameter_string, script_name, repo_name, hash_name):
+    def get_slurm_script(self, parameter_string, steps, reps, script_name, repo_name, hash_name):
         return "\n".join([
             self.get_slurm_head(hash_name),
-            self.get_slurm_code(parameter_string),
+            self.get_slurm_code(parameter_string, steps, reps),
             self.get_slurm_tail(script_name, repo_name, hash_name)])
     
-    def get_slurm_code(self):
+    def get_slurm_code(self, parameter_string, steps, reps):
         return ""
     
 
@@ -54,7 +51,7 @@ class SBatchRunner(SLURM):
         
         SLURM.__init__(self, steps, reps, model_class)
 
-    def get_slurm_code(self, parameter_string):
+    def get_slurm_code(self, parameter_string, steps, reps):
         format_str = """
 batch_run = BatchRunner(
         %s, 
@@ -70,7 +67,7 @@ batch_run = BatchRunner(
 batch_run.run_all()
 out = batch_run.get_agent_vars_dataframe()
 """
-        return format_str % (self.model_class, parameter_string, self.reps, self.steps)
+        return format_str % (self.model_class, parameter_string, reps, steps)
 
 
 class STimeseriesRunner(SLURM):
@@ -79,7 +76,7 @@ class STimeseriesRunner(SLURM):
         
         SLURM.__init__(self, steps, reps, model_class)
 
-    def get_slurm_code(self, parameter_string):
+    def get_slurm_code(self, parameter_string, steps, reps):
         format_str = """
 runner = timeseries_aggregator.TimeseriesRunner(%s, 
                           %s,
@@ -90,28 +87,31 @@ runner = timeseries_aggregator.TimeseriesRunner(%s,
                           model_aggregator=None)
 
 out = pd.concat([agg_agent for param_dict, agent_data, model_data, agg_agent, agg_model in runner.dataframes()])"""
-        return format_str % (self.model_class, parameter_string, self.steps, self.reps)
+        return format_str % (self.model_class, parameter_string, steps, reps)
 
     
 class Analysis():
     
-    def __init__(self, name, slurm_class, parameters, addl_reps, commit):
+    def __init__(self, name, slurm_class, parameters, steps, reps,
+                 addl_reps, commit):
         self.name = name
         self.slurm_class = slurm_class
+        parameters["steps"] = steps
+        self.reps = reps
         self.addl_reps = addl_reps
         self.commit = commit
         self.addl_reps = addl_reps
-        self.argument_strings = [i.__str__() for i in unpack_params(parameters)]
-        self.scripts = []
+        self.unpacked_params = unpack_params(parameters)
 
     def write_scripts(self):
         os.makedirs("output/output-%s-%s/" % (self.name, self.commit))
         os.makedirs("scripts/scripts-%s-%s/" %  (self.name, self.commit)) 
-        for arg_str in self.argument_strings:
+        for param_set in self.unpacked_params:
             for i in range(self.addl_reps):
                 unique_id = uuid4().hex
-                out_script = self.slurm_class.get_slurm_script(arg_str, self.name, self.commit, unique_id)
+                out_script = self.slurm_class.get_slurm_script(param_set.__str__(), param_set['steps'], self.reps,
+                                                               self.name, self.commit, unique_id)
                 script_name = "scripts/scripts-%s-%s/%s.sh" % (self.name, self.commit,unique_id)
                 with open(script_name, "w") as f:
                     f.write(out_script)
-                    print(script_name)
+
