@@ -1,0 +1,4 @@
+-/output
+-/slurm-out
+-/scripts
+-*.tar.gz
