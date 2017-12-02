@@ -70,7 +70,8 @@ class BaseModel(Model):
                  encounter_width = 0.01,
                  verbose=False,
                  latency = 0.5,
-                 epi_inheritance = 1):
+                 epi_inheritance = 1,
+                 **kwargs):
         '''
         Create a new Phage-Bacteria model with the given parameters.
 

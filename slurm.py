@@ -5,16 +5,18 @@ import os
 
 
 class SLURM():
-    def __init__(self, steps, reps, model_class):
+    def __init__(self, model_class,time="15:00", mem=1500):
         self.model_class = model_class
+        self.time=time
+        self.mem=mem
         pass
     
     def get_slurm_head(self, hash_name):
         format_str = '''#!/bin/bash
 #SBATCH --job-name=maxwell_abm
 #SBATCH --ntasks=1
-#SBATCH --time=15:00
-#SBATCH --mem=1500
+#SBATCH --time=%s
+#SBATCH --mem=%i
 #SBATCH --output "slurm-out/slurm-%s.out"
         
 module add anaconda/4.3.0
@@ -28,7 +30,7 @@ from mesa.batchrunner import BatchRunner
 from rm_abm import helper_functions
 from rm_abm import parameters
 import pandas as pd'''
-        return format_str % hash_name
+        return format_str % (self.time, self.mem, hash_name)
 
     def get_slurm_tail(self, script_name, repo_name, hash_name):
         format_str = '''out.to_csv("output/output-%s-%s/%s.csv")
@@ -47,9 +49,9 @@ echo success'''
     
 
 class SBatchRunner(SLURM):
-    def __init__(self, steps, reps, model_class):
+    def __init__(self,  model_class, **kwargs):
         
-        SLURM.__init__(self, steps, reps, model_class)
+        SLURM.__init__(self, model_class, **kwargs)
 
     def get_slurm_code(self, parameter_string, steps, reps):
         format_str = """
@@ -72,9 +74,9 @@ out = batch_run.get_agent_vars_dataframe()
 
 class STimeseriesRunner(SLURM):
 
-    def __init__(self, steps, reps, model_class):
+    def __init__(self, model_class,**kwargs):
         
-        SLURM.__init__(self, steps, reps, model_class)
+        SLURM.__init__(self, model_class,**kwargs)
 
     def get_slurm_code(self, parameter_string, steps, reps):
         format_str = """
@@ -109,9 +111,16 @@ class Analysis():
         for param_set in self.unpacked_params:
             for i in range(self.addl_reps):
                 unique_id = uuid4().hex
-                out_script = self.slurm_class.get_slurm_script(param_set.__str__(), param_set['steps'], self.reps,
-                                                               self.name, self.commit, unique_id)
-                script_name = "scripts/scripts-%s-%s/%s.sh" % (self.name, self.commit,unique_id)
+                out_script = self.slurm_class.\
+                             get_slurm_script(param_set.__str__(),
+                                              param_set['steps'],
+                                              self.reps,
+                                              self.name,
+                                              self.commit,
+                                              unique_id)
+                script_name = "scripts/scripts-%s-%s/%s.sh" %\
+                              (self.name, self.commit,unique_id)
                 with open(script_name, "w") as f:
                     f.write(out_script)
+                print(script_name)
 
