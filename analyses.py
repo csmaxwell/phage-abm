@@ -85,8 +85,8 @@ predict_with_mut_and_steps_params = short_tradeoff_params.copy()
 predict_with_mut_and_steps_params['phage_mutation_freq'] = [0.01, 0.1]
 
 a4 = Analysis("predict_with_mut_and_steps",
-              STimeseriesRunner("TradeOffSpikeIn", time="20:00", mem=2000),
-              predict_with_mut_and_steps_params , [200,400], 10, 1,
+              STimeseriesRunner("TradeOffSpikeIn", time="25:00", mem=2000),
+              predict_with_mut_and_steps_params , [100,200,400,500], 10, 3,
               args.repo)
 
 if args.a4:
