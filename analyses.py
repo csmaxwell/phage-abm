@@ -15,7 +15,7 @@ args = parser.parse_args()
 ########## short_tradeoff
 
 short_tradeoff_params = {'bacteria_per_step': 10,
-                         'encounter_width': 0.1,
+                         'encounter_width': 0.01,
                          'fraction_b_m1': 0.5,
                          'initial_bacteria': 100,
                          'initial_fraction_p_g1': 1,
