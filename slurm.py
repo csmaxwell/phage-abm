@@ -60,12 +60,7 @@ batch_run = BatchRunner(
         %s, 
         iterations=%i, 
         max_steps=%i,
-        agent_reporters = {
-          "breed" : lambda a : a.breed,
-          "methylation" : lambda a: a.methylation,
-          "genotype" : lambda a: a.genotype,
-          "affinity_0" : helper_functions.get_affinity(0),
-          "affinity_1" : helper_functions.get_affinity(1)})
+        agent_reporters = parameters.agent_reporters)
 batch_run.run_all()
 out = batch_run.get_agent_vars_dataframe()
 """
