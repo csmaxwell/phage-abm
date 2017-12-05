@@ -7,6 +7,7 @@ parser.add_argument('--a1', default=False, action='store_true', help="Run short_
 parser.add_argument('--a2', default=False, action='store_true', help="Run evo_trade")
 parser.add_argument('--a3', default=False, action='store_true', help="Run predictivity")
 parser.add_argument('--a4', default=False, action='store_true', help="Run predictivity with mutation and steps")
+parser.add_argument('--a5', default=False, action='store_true', help="Foundersa analysis")
 
 
 args = parser.parse_args()
@@ -91,3 +92,14 @@ a4 = Analysis("predict_with_mut_and_steps",
 
 if args.a4:
     a4.write_scripts()
+
+
+
+########## founders analysis
+
+a5 = Analysis("founders",
+              STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
+              XX, 200, 10, 3, args.repo)
+
+if args.a5:
+    a5.write_scripts()

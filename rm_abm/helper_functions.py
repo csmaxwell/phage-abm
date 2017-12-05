@@ -183,3 +183,11 @@ def get_manipulated_descendents(agent_dataframe):
          "population_affinity_1" : [np.mean(agent_dataframe[agent_dataframe.Step == last_step].affinity_1)],
          "population_affinity_0_std" : [np.std(agent_dataframe[agent_dataframe.Step == last_step].affinity_0)],
          "population_affinity_1_std" : [np.std(agent_dataframe[agent_dataframe.Step == last_step].affinity_1)]})
+
+## Founder analysis
+
+def founders_analysis(df):
+    affinity_by_step = get_population_means(df, ["Run", "Iteration", "Step"])
+    founders = get_founder(df,0)
+    founders = get_last_step(founders)
+    return pd.merge(affinity_by_step, founders)

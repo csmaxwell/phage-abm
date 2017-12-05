@@ -69,9 +69,10 @@ out = batch_run.get_agent_vars_dataframe()
 
 class STimeseriesRunner(SLURM):
 
-    def __init__(self, model_class,**kwargs):
+    def __init__(self, model_class,agent_aggregator="helper_functions.get_manipulated_descendents",**kwargs):
         
-        SLURM.__init__(self, model_class,**kwargs)
+        SLURM.__init__(self, model_class, **kwargs)
+        self.agent_aggregator = agent_aggregator
 
     def get_slurm_code(self, parameter_string, steps, reps):
         format_str = """
@@ -79,12 +80,12 @@ runner = timeseries_aggregator.TimeseriesRunner(%s,
                           %s,
                           %i, %i, 
                           agent_reporters=parameters.agent_reporters,
-                          agent_aggregator=helper_functions.get_manipulated_descendents,
+                          agent_aggregator=%s,
                           model_reporters=parameters.model_reporters,
                           model_aggregator=None)
 
 out = pd.concat([agg_agent for param_dict, agent_data, model_data, agg_agent, agg_model in runner.dataframes()])"""
-        return format_str % (self.model_class, parameter_string, steps, reps)
+        return format_str % (self.model_class, parameter_string, steps, reps, self.agent_aggregator)
 
     
 class Analysis():
