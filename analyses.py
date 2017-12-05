@@ -98,10 +98,10 @@ if args.a4:
 founders_params = short_tradeoff_params.copy()
 del founders_params['spike_in_affinity_0']
 del founders_params['spike_in_methylation']
-founders_params['initial_phage'] = 10
+founders_params['initial_phage'] = [10,100]
 founders_params['epi_inheritance'] = [-2, -1, 1]
 founders_params['phage_mutation_freq'] = [0.01, 0.1]
-founders_params['phage_off_diagonal'] = [0, 0.05, 0.2]
+founders_params['phage_off_diagonal'] = [0, 0.05, 0.2, 0.5]
 predict_params['fraction_b_m1'] = [0.1,0.5]
 
 a5 = Analysis("founders",
