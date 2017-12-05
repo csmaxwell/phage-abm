@@ -187,7 +187,7 @@ def get_manipulated_descendents(agent_dataframe):
 ## Founder analysis
 
 def founders_analysis(df):
-    affinity_by_step = get_population_means(df, ["Run", "Iteration", "Step"])
+    affinity_by_step = get_population_means(df, ["Run", "Iteration"])
     founders = get_founder(df,0)
     founders = get_last_step(founders)
     return pd.merge(affinity_by_step, founders)

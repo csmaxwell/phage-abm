@@ -7,7 +7,7 @@ parser.add_argument('--a1', default=False, action='store_true', help="Run short_
 parser.add_argument('--a2', default=False, action='store_true', help="Run evo_trade")
 parser.add_argument('--a3', default=False, action='store_true', help="Run predictivity")
 parser.add_argument('--a4', default=False, action='store_true', help="Run predictivity with mutation and steps")
-parser.add_argument('--a5', default=False, action='store_true', help="Foundersa analysis")
+parser.add_argument('--a5', default=False, action='store_true', help="Founders analysis")
 
 
 args = parser.parse_args()
@@ -93,13 +93,20 @@ a4 = Analysis("predict_with_mut_and_steps",
 if args.a4:
     a4.write_scripts()
 
-
-
 ########## founders analysis
+
+founders_params = short_tradeoff_params.copy()
+del founders_params['spike_in_affinity_0']
+del founders_params['spike_in_methylation']
+founders_params['initial_phage'] = 10
+founders_params['epi_inheritance'] = [-2, -1, 1]
+founders_params['phage_mutation_freq'] = [0.01, 0.1]
+founders_params['phage_off_diagonal'] = [0, 0.05, 0.2]
+predict_params['fraction_b_m1'] = [0.1,0.5]
 
 a5 = Analysis("founders",
               STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
-              XX, 200, 10, 3, args.repo)
+              founders_params, 200, 10, 3, args.repo)
 
 if args.a5:
     a5.write_scripts()
