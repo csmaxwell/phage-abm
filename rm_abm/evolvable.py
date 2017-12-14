@@ -13,7 +13,7 @@ class EvolvableVector(object):
         mutation_frequency (float): probability of a jump
         '''
         
-        self.vector = vector
+        self.vector = self.constrain(vector)
         self.mutation_size = mutation_size
         self.mutation_frequency = mutation_frequency
 
