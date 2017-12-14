@@ -49,9 +49,10 @@ if args.a1:
 evolve_params = short_tradeoff_params.copy()
 del evolve_params['spike_in_affinity_0']
 del evolve_params['spike_in_methylation']
+evolve_params['encounter_width'] = [0.01,0.1]
 evolve_params['re_degrade_foreign_0'] = [0.999,0.99,0]
 evolve_params['re_degrade_foreign_1'] = [0.999,0.99,0]
-evolve_params['epi_inheritance'] = [-2,-1,1,0.5]
+evolve_params['epi_inheritance'] = [-2,-1,1,0.5,0.25,0.1]
 
 a2 = Analysis("evo_trade",
               SBatchRunner("TradeOff"),
@@ -102,7 +103,7 @@ founders_params['initial_phage'] = [10,100]
 founders_params['epi_inheritance'] = [-2, -1, 1]
 founders_params['phage_mutation_freq'] = [0.01, 0.1]
 founders_params['phage_off_diagonal'] = [0, 0.05, 0.2, 0.5]
-predict_params['fraction_b_m1'] = [0.1,0.5]
+founders_params['fraction_b_m1'] = [0.1,0.5]
 
 a5 = Analysis("founders",
               STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
