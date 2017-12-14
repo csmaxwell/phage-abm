@@ -104,6 +104,8 @@ founders_params['epi_inheritance'] = [-2, -1, 1]
 founders_params['phage_mutation_freq'] = [0.01, 0.1]
 founders_params['phage_off_diagonal'] = [0, 0.05, 0.2, 0.5]
 founders_params['fraction_b_m1'] = [0.1,0.5]
+founders_params['re_degrade_foreign_0'] = [0.999, 0.99, 0],
+founders_params['re_degrade_foreign_1'] = [0.999, 0.99, 0],
 
 a5 = Analysis("founders",
               STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
