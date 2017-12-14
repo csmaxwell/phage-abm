@@ -107,7 +107,7 @@ founders_params['fraction_b_m1'] = [0.1,0.5]
 
 a5 = Analysis("founders",
               STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
-              founders_params, 200, 10, 3, args.repo)
+              founders_params, 200, 10, 10, args.repo)
 
 if args.a5:
     a5.write_scripts()
