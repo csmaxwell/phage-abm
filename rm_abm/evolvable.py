@@ -65,9 +65,9 @@ class EvolvableVectorConstrained(EvolvableVector):
                  mutation_size,
                  mutation_frequency,
                  bounding_line):
-
-        EvolvableVector.__init__(self, vector,  mutation_size, mutation_frequency)
+        
         self.bounding_line = bounding_line
+        EvolvableVector.__init__(self, vector,  mutation_size, mutation_frequency)
 
     def constrain(self, vector):
         def constrainer(x):

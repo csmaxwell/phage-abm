@@ -51,14 +51,14 @@ def get_last_step(agent_data):
     return agent_data[agent_data.Step == max_step]
 
     
-def get_founder(experiment, meth):
+def get_founder(experiment, genotype):
     '''
     Finds the parents of first phage in an experiment to get to 
     infect the supplied genotype. Returns df with no rows if 
     there are no invaders.
     '''
     invaders = experiment[np.logical_and(experiment.breed=="Phage", 
-                                         experiment.methylation == meth)]
+                                         experiment.last_infected == genotype)]
     first_step = invaders.Step.min()
     parents = invaders[invaders.Step == first_step].parent.unique() # could be multiple invader parents
     parent_df = experiment[experiment.AgentID.isin(parents)]  # each ID can have multiple steps
