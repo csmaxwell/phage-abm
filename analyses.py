@@ -3,6 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="""""")
 parser.add_argument("repo", type=str, help="")
+parser.add_argument('--a0', default=False, action='store_true', help="Test")
 parser.add_argument('--a1', default=False, action='store_true', help="Run short_tradeoff")
 parser.add_argument('--a2', default=False, action='store_true', help="Run evo_trade")
 parser.add_argument('--a3', default=False, action='store_true', help="Run predictivity")
@@ -35,10 +36,18 @@ short_tradeoff_params = {'bacteria_per_step': 10,
                          'spike_in_methylation' : [0,1],
                          'shape' : [0,1,2]}
 
+a0 = Analysis("short_tradeoff",
+              STimeseriesRunner("TradeOffSpikeIn"),
+              short_tradeoff_params,
+              200, 1, 1, args.repo)
+
 a1 = Analysis("short_tradeoff",
               STimeseriesRunner("TradeOffSpikeIn"),
               short_tradeoff_params,
               200, 10, 3, args.repo)
+
+if args.a0:
+    a0.write_scripts()
 
 if args.a1:
     a1.write_scripts()
@@ -99,13 +108,13 @@ if args.a4:
 founders_params = short_tradeoff_params.copy()
 del founders_params['spike_in_affinity_0']
 del founders_params['spike_in_methylation']
-founders_params['initial_phage'] = [10,100]
+founders_params['initial_phage'] = 10
 founders_params['epi_inheritance'] = [-2, -1, 1]
 founders_params['phage_mutation_freq'] = [0.01, 0.1]
 founders_params['phage_off_diagonal'] = [0, 0.05, 0.2, 0.5]
-founders_params['fraction_b_m1'] = [0.1,0.5]
-founders_params['re_degrade_foreign_0'] = [0.999, 0.99, 0],
-founders_params['re_degrade_foreign_1'] = [0.999, 0.99, 0],
+founders_params['fraction_b_m1'] = 0.5
+founders_params['re_degrade_foreign_0'] = [0.999, 0]
+founders_params['re_degrade_foreign_1'] = [0.999, 0]
 
 a5 = Analysis("founders",
               STimeseriesRunner("TradeOff", agent_aggregator="helper_functions.founders_analysis"),
