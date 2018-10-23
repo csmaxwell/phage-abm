@@ -1,0 +1,122 @@
+
+* Overview
+
+The analyses were run using the script =run-all.sh= on a cluster with
+the SLURM scheduling engine. The script was run multiple times with
+different arguments for the six different analyses that were to be
+run. The script loads a conda virtual environment defined in
+=configure-virtual-env.sh=.
+
+This code is built on the MESA framework, but the original
+implementation contained a bug that prevented me from removing agents
+from the simulation when they died
+(https://github.com/projectmesa/mesa/issues/302). I resolved this
+issue in my own branch of MESA by keeping track of agents using a
+dictionary (https://github.com/csmaxwell/mesa.git).
+
+* Example code
+
+I ended up having to write some confusing code to run all the analyses in parallel. For a simple example of running the model and collecting model information at the end, see [[file:evolvable-phage.py]]. This code iterates over a few different variables and writes information about the agents at the end of the model.
+
+* Model
+
+All of this code is defined under rm_abm
+
+** BatchRunnerProgress.py (not used)
+
+This is taken from the mesa code bank and altered to allow the BatchRunner to be used with a progress bar in a Jupyter notebook. Not used.
+
+** =evolvable.py=
+
+Implements an EvolvableVector and EvolvableVectorConstrained. These are used to keep track of the affinities of the phage for the two different bacteria.
+
+** =hdf_function.py= (not used)
+
+ These are convenience functions for working with the HDF format.
+
+** =helper_functions.py=
+
+Defines various functions for working with the model.
+
+** =load_results.py= (not used)
+
+** =log_progress.py= (not used)
+
+Defines a widget that can make a progress bar in a Jupyter notebook.
+
+** =parameters.py=
+
+These were some parameter sets I used during the exploration of the code. This also defines the default reporters used in the BatchRunner for the agents and the model.
+
+** =rm_abm.py=
+
+This defines the different versions of the model and the agents. The BaseModel does not impose a trade-off between the affinities and doesn't add a test lineage. The other versions do.
+
+** =timeseries_runner.py= (not used)
+
+Collects individual agent data at each time step
+
+** =wolfsheep_schedule.py= 
+
+This is taken from the mesa "Wolf Sheep" model. It defines RandomActivationByBreed, which is the scheduler I use in the model.
+
+** =timeseries_aggregator.py=
+
+The generator =timeseries_aggregator.TimeSeriesRunner= iterates over all the combinations of the parameters and returns raw and aggregated versions of the model and the agent data. I used this to calculate aggregated information about the state of the agents.
+
+** =timeseries_aggregator_progress.py= (not used)
+
+
+* SLURM submission
+
+** analyses.py
+
+This defines six different "Analyses" with (1) different sets of parameters, (2) different versions of the model, and (3) different ways of collecting data from the output of the model. The flags =--a2 --a3 --a4 --a5= will run the five analyses that made it into the paper. The script =run-all.sh= basically does the following:
+
+#+begin_src sh
+source activate myenv ## Activate the python environment
+REPO=$(git log --pretty="%h" | head -1)
+python analyses.py --a2 --a3 --a4 --a5 $REPO | xargs -I {} sbatch {}
+#+end_src
+
+Note that =analyses.py= takes the hex code of the commit of the git repository. In the resulting output for each analyses, the commit code is appended to the end of it.
+
+** slurm.py
+
+I ran five different "analyses" using this code. The class =Analysis= is defined in [[file:slurm.py]]. The code is used to assemble the scripts used to run the ABM. For a simpler example of these, see [[file:script00-short-predictivity.py]], which also writes out an sbatch script, but does so without all the confusing meta-programming.
+
+*** Analysis
+
+ This is the method I used to wrap writing scripts to run the different sets of parameters, etc. This method takes as its init arguments:
+
+ - name :: The name of the output folder.
+ - slurm_class :: There are two different classes that inherit from
+                    SLURM: STimeSeriesrunner and SBatchRunner. The SLURM
+                    class has methods that can be called to put in the
+                    header and the tail of a typical SLURM script. They
+                    differ in what method of collecting the data they
+                    use. Both of these classes take a single argument
+                    that defines which version of the model to use.
+ - parameters :: A dictionary that gives lists of the values that
+                 should be scanned
+ - steps :: How many steps to run the model
+ - reps :: How many iterations for each set of parameters
+ - addl_reps :: How many iterations of the iterations. I did this so
+		that I could run the code in parallel better.
+ - commit :: The hex code of the commit
+
+ When the =write_scripts= method is called, the method will write scripts with unique uuid hex names and matching csv files that are the results of the model.
+
+*** SBatchRunner
+
+See the mesa documentation for how the BatchRunner works. Note that agent_reporters (which are functions that are used to collect data about the agents) are passed. I always used the same reporters, which are defined in =parameters.agent_reporters=. Note that it overwrites the =get_slurm_code= method in =SLURM=. This type of runner collects data at the end of the run only.
+
+The method takes as its init arguments the name of the version of the model to run as well as kwargs that are passed to the =SLURM= method
+
+*** STimeseriesRunner
+
+The generator =timeseries_aggregator.TimeSeriesRunner= iterates over all the combinations of the parameters and returns raw and aggregated versions of the model and the agent data. I used this to calculate aggregated information about the state of the agents.
+
+The method takes as its init arguments the name of the version of the model to run as well as kwargs that are passed to the =SLURM= method
+
+
